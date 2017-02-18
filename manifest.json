@@ -7,20 +7,30 @@
         "default_icon": "images/raeting.png",
         "default_popup": "popup.html"
     },
-
-      "permissions": [
-        "*://*/*",
-        "storage",
+    "permissions": [
+        "*://*.mercadolibre.cl/*",
+        "*://*.mercadolibre.com.co/*",
+        "*://*.mercadolibre.com.ar/*",
+        "*://*.mercadolivre.com.br/*",
+        "*://*.mercadolibre.com.mx/*",
+        "*://*.mercadolibre.com.pa/*",
         "tabs",
-        "cookies",
-        "management",
-        "contextMenus",
-        "activeTab",
-        "https://ajax.googleapis.com/"
+        "activeTab"
     ],
-    "content_scripts": [{
-        "matches": ["*://*/*"],
-        "all_frames": true,
-        "js": ["js/content.js"]
-    }]
+    "content_scripts": [
+        {
+            "matches": [
+                "*://*.mercadolibre.cl/*",
+                "*://*.mercadolibre.com.co/*",
+                "*://*.mercadolibre.com.ar/*",
+                "*://*.mercadolivre.com.br/*",
+                "*://*.mercadolibre.com.mx/*",
+                "*://*.mercadolibre.com.pa/*"
+            ],
+            "all_frames": true,
+            "js": [
+                "js/content.js"
+            ]
+        }
+    ]
 }
