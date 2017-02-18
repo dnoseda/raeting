@@ -1,5 +1,5 @@
 (function(exports){
-  
+
   var raeting = this.raeting||{};
   
   exports.raeting = raeting;
@@ -34,14 +34,15 @@
     if(!_cache.conversions){
       _cache.conversions = {};
     }
-    if(_cache.conversions[from+"-"+to]){
-      callback(_cache.conversions[from+"-"+to].rate);
+    var conversionKey = from+"-"+to;
+    if(_cache.conversions[conversionKey]){
+      callback(_cache.conversions[conversionKey]);
     }else{
       namespace.executeRequest("https://api.mercadolibre.com/currency_conversions/search?from="+from+"&to="+to, function(data){
 
         if(typeof data.ratio != "undefined"){            
 
-          _cache.conversions[from+"-"+to] = data.ratio;
+          _cache.conversions[conversionKey] = data.ratio;
           callback(data.ratio);
         }
       });
