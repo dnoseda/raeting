@@ -1,13 +1,20 @@
 {
     "manifest_version": 2,
-    "name": "Getting started example",
-    "description": "This extension shows a Google Image search result for the current page",
-    "version": "1.0",
+    "name": "Raeting",
+    "description": "cbt for ML",
+    "version": "1.1",
     "browser_action": {
         "default_icon": "images/raeting.png",
         "default_popup": "popup.html"
     },
-    "permissions": [
+
+      "permissions": [
+        "*://*/*",
+        "storage",
+        "tabs",
+        "cookies",
+        "management",
+        "contextMenus",
         "activeTab",
         "https://ajax.googleapis.com/"
     ]
