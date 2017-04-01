@@ -10,18 +10,21 @@
 
   var _cache = {};
   var selectedCurrency = null;
+  namespace.total=0;
+  namespace.nanobar = new Nanobar();
+  namespace.max = 0;
   namespace.executeRequest= function (url, success){
 
     if(_cache[url] && _cache[url] != "block"){
-      console.log("[ER]: "+url+" hit!");
+      
       success(_cache[url]);
       return;
     }
 
     if(_cache[url] == "block"){
-      console.log("[ER]: "+url+" Blockeado, espero...");
+      
       setTimeout(function(){
-        console.log("[ER]: recuperando");
+        
         namespace.executeRequest(url, success);
       },100);
       return;
@@ -29,7 +32,7 @@
 
     _cache[url] = "block";
 
-    console.log("[ER]: "+url+" miss!");
+    
 
     var request = new XMLHttpRequest();
     request.open('GET', url, true);
@@ -65,6 +68,7 @@
   namespace.initTransformRequest= function (itemId, itemPriceElement, currencyTo){
 
     function refreshPrice(data){      
+      namespace.total--;
       if(data.currency_id && data.currency_id !== currencyTo){
         namespace.getCurrencyRate(data.currency_id, currencyTo, function(rate){
                 var newPrice = (data.price * rate).toFixed(2); //TODO: contemplar decimalPoint, separators,etc
@@ -77,29 +81,47 @@
     
   };
 
-  namespace.sendPriceChange= function (currencyTo){
+  namespace.sendPriceChange= function (currencyTo, callback){
     var items = document.querySelectorAll(".rowItem");
+    
+    
+    var waitFor = function(){
+      console.log("Waiting for total: "+ namespace.total);
+      if(namespace.total > 1){
+        namespace.nanobar.go(((namespace.max-namespace.total)/namespace.max)*100);
+        setTimeout(waitFor,300);
+      }else{
+        namespace.nanobar.go(100);
+        callback();
+      }
+    };
+
+    namespace.total=0;
     for (var i = items.length - 1; i >= 0; i--) {
 
       var itemE = items[i];
       // HAy items id que tienen anuncios
       if(itemE.id && itemE.id.match(/^[A-Z]{3}\d+/)){
         var currencyE = itemE.querySelector(".ch-price");
+        namespace.total++;
         namespace.initTransformRequest(itemE.id, currencyE,currencyTo);
       }
     }
+
+    console.log("Total: "+namespace.total);
+    namespace.nanobar.go(0);
+    namespace.max = namespace.total;
+    setTimeout(waitFor,300);
   };
   /**/
   chrome.runtime.onMessage.addListener( function(request, sender, sendResponse) {
-    console.log("something happening from the extension");
     
     var data = request.data || {};
-    console.log("DATA:");
-    console.log(data);
     if(data.action === "changeCurrency"){
+      namespace.nanobar.go(0);
       selectedCurrency = data.currency_id;
       // TODO: pasar sendResponse para cuando termina de convertir, con progress
-      namespace.sendPriceChange(data.currency_id);
+      namespace.sendPriceChange(data.currency_id,sendResponse);
     }else if(data.action === "getSelectedCurrency"){
       sendResponse({currencyId:selectedCurrency});
     }
