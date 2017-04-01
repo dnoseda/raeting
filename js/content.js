@@ -120,7 +120,6 @@
     if(data.action === "changeCurrency"){
       namespace.nanobar.go(0);
       selectedCurrency = data.currency_id;
-      // TODO: pasar sendResponse para cuando termina de convertir, con progress
       namespace.sendPriceChange(data.currency_id,sendResponse);
     }else if(data.action === "getSelectedCurrency"){
       sendResponse({currencyId:selectedCurrency});
