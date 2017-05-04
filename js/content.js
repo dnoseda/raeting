@@ -69,11 +69,17 @@
 
     function refreshPrice(data){      
       namespace.total--;
-      if(data.currency_id && data.currency_id !== currencyTo){
+      if(data.currency_id &&
+          (!!selectedCurrency ||
+            selectedCurrency !== currencyTo) &&
+          data.currency_id !== currencyTo){
         namespace.getCurrencyRate(data.currency_id, currencyTo, function(rate){
                 var newPrice = (data.price * rate).toFixed(2); //TODO: contemplar decimalPoint, separators,etc
                 itemPriceElement.innerHTML = newPrice + " (" +currencyTo+ ")";
               });
+      }else if(data.currency_id === currencyTo){
+        var newPrice = (data.price).toFixed(2); //TODO: contemplar decimalPoint, separators,etc
+        itemPriceElement.innerHTML = newPrice + " (" +currencyTo+ ")";
       }
     }
 
