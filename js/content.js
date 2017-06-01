@@ -109,6 +109,9 @@
       // HAy items id que tienen anuncios
       if(itemE.id && itemE.id.match(/^[A-Z]{3}\d+/)){
         var currencyE = itemE.querySelector(".ch-price");
+        if(!currencyE){
+          currencyE =itemE.querySelector(".item__price");
+        }
         namespace.total++;
         namespace.initTransformRequest(itemE.id, currencyE,currencyTo);
       }
